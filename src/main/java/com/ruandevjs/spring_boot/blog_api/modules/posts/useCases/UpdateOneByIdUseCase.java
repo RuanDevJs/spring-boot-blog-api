@@ -17,11 +17,17 @@ public class UpdateOneByIdUseCase {
     private FindPostByIdUseCase findPostByIdUseCase;
 
     public void execute(UUID postId, Optional<PostEntity> payload) {
+        // PROBLEMA: o post é localizado apenas pelo id, sem verificar se pertence ao usuário
+        // autenticado. Assim, quem souber o UUID pode alterar posts de outras pessoas.
+        // Busque pelo postId junto com o id do usuário autenticado ou valide a propriedade antes da alteração.
         Optional<PostEntity> postEntity = this.findPostByIdUseCase.execute(postId);
         postEntity.ifPresent((post) -> {
             if (payload.isEmpty()) return;
 
             PostEntity data = payload.get();
+            // PROBLEMA: esta validação verifica somente se o texto está vazio e não aplica as
+            // demais regras da entidade, como o mínimo de 5 caracteres. Um valor inválido pode
+            // falhar apenas ao salvar e gerar HTTP 500. Valide um DTO antes de executar este caso de uso.
             if (data.getTitle() != null && !data.getTitle().isEmpty()) {
                 post.setTitle(data.getTitle());
             }

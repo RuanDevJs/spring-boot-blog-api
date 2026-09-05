@@ -19,7 +19,11 @@ public class SecurityConfig {
     public SecurityFilterChain secutiryFilterChain(HttpSecurity httpSecurity) {
         httpSecurity.csrf(csrf -> csrf.disable());
         httpSecurity.authorizeHttpRequests(http -> {
-            http.requestMatchers("/users", "/users/**", "/posts", "/posts/**", "/").permitAll();
+            // PROBLEMA: liberar "/posts/**" torna públicas também as operações de criação,
+            // atualização e exclusão. Isso permite alterações sem autenticação e agrava a falta
+            // de verificação de propriedade nos casos de uso. Libere apenas leituras públicas e
+            // exija autenticação nas rotas POST, PUT e DELETE.
+            http.requestMatchers("/users/**", "/posts/**", "/auth").permitAll();
             http.anyRequest().authenticated();
         });
         return httpSecurity.build();
