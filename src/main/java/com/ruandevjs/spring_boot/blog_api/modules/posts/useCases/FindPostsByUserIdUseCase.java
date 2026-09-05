@@ -19,6 +19,10 @@ public class FindPostsByUserIdUseCase {
 
     public List<PostEntity> execute(UUID userId) {
         this.findUserByIdUseCase.execute(userId);
+
+        // PROBLEMA: a consulta retorna todos os posts do usuário sem paginação. Uma conta com
+        // muitos posts pode causar consulta lenta, resposta grande e consumo excessivo de memória.
+        // Receba um Pageable e retorne Page<PostEntity>, mantendo o limite de itens por página.
         return this.postRepository.findByUserId(userId);
     }
 }
