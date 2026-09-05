@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  blog-api:
+    image: bitnami/postgresql
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      - POSTGRESQL_USERNAME=${DB_USERNAME}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRESQL_DATABASE=${DATABASE}
+    volumes:
+      - blog-api:/bitnami/postgresql
+volumes:
+  blog-api:
